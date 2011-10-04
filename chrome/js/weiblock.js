@@ -1,5 +1,6 @@
 $(function(){
   var textToBlock = "";
+  var blackList = [];
 
   if(!window.Kolich){
     Kolich = {};
@@ -22,33 +23,46 @@ $(function(){
 
   $(document).bind("mouseup", Kolich.Selector.mouseup);
 
+  function removeOrAddBlockLink(elem){
+    var removed = false;
+
+    for(var i = 0; i < blackList.length; i++){
+      if ($(elem).closest('li').first().text().indexOf(blackList[i]) >= 0) {
+        $(elem).closest('li').hide('slow', function(){
+          $(this).remove();
+          removed = true;
+        });
+      }
+    }
+
+    if(!removed){
+      $("<a href='javascript:void(0);'><strong>屏蔽</strong></a><span class='MIB_line_l'>|</span>").click(function(){
+          $(elem).closest('li').hide('slow', function(){
+            if(textToBlock != ""){
+              chrome.extension.sendRequest({op: 'addToBlackList', content: textToBlock});
+            }
+            
+            $(this).remove();
+        });
+      }).prependTo($(elem));
+    }
+  }
+
   chrome.extension.sendRequest({op: 'getBlackList'}, function(response){
-    var blackList = response.blackList;
+    blackList = response.blackList;
     console.log(response.blackList);
     
-    $('.MIB_mbloglist .MIB_feed li .MIB_feed_c .rt').livequery(function(){
-      var removed = false;
+    $('.MIB_mbloglist .MIB_feed li .MIB_feed_c .rt').each(function(idx, elem){
+       removeOrAddBlockLink(elem);
+    });
 
-      for(var i = 0; i < blackList.length; i++){
-        if ($(this).closest('li').first().text().indexOf(blackList[i]) >= 0) {
-          $(this).closest('li').hide('slow', function(){
-            $(this).remove();
-            removed = true;
-          });
-        }
+    $('.MIB_mbloglist').bind('DOMNodeInserted', function(event){
+      if($(event.target).hasClass('MIB_feed')){
+        console.log(event.target);
+        $(event.target).find('.MIB_feed_c .rt').each(function(idx, elem){
+          removeOrAddBlockLink(elem);   
+        });
       }
-
-      if(!removed){
-        $("<a href='javascript:void(0);'><strong lang='CD0023'>屏蔽</strong></a><span class='MIB_line_l'>|</span>").click(function(){
-            $(this).closest('li').hide('slow', function(){
-              if(textToBlock != ""){
-                chrome.extension.sendRequest({op: 'addToBlackList', content: textToBlock});
-              }
-              
-              $(this).remove();
-          });
-        }).prependTo($(this));
-      } 
     });
 
     $('#pully_list').remove();
