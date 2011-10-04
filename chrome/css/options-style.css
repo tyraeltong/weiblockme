@@ -1,0 +1,49 @@
+.taglines{
+  overflow: hidden;
+  width: 332px;
+  background: white;
+  /*border: 1px solid #B9C1CA;*/
+  padding: 2px 5px 0 5px;
+  font-size: 11px;
+}
+.tagLines li.newTagItem{
+  float: left;
+  position: relative;
+  height: 17px;
+  margin: 0 0 2px 0;
+  padding: 0;
+  background: white;
+  border-right: 6px solid white;
+}
+.tagLines li.newTagItem a{
+  background: gainsboro;
+  border: 1px solid gainsboro;
+  display: block;
+  position: relative;
+  padding: 0 15px 0 5px;
+  color: black;
+  cursor: pointer;
+  height: 15px;
+}
+.tagLines li.newTagItem span{
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  height: 11px;
+  width: 11px;
+  background: transparent url('../images/tagComplete.png') no-repeat 0 0;
+}
+.tagLines li.newTagItem a:hover{
+  border-color:#3274c0;
+  text-decoration:none;
+}
+.tagLines li.newTagItem a em:hover{
+  color:#005dc9;
+}
+.tagLines li.newTagItem a:hover span{
+  background-position:0 0;
+}
+.tagLines li.newTagItem span:hover{
+  display:block;
+  background:transparent url('../images/tagComplete.png') no-repeat 0 -11px;
+}

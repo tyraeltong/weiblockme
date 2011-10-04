@@ -1,0 +1,22 @@
+<html>
+  <script>
+    function loadBlackList(){
+      return localStorage["blackList"] ? localStorage["blackList"].split(',') : [];
+    }
+    
+    var blackListStore = loadBlackList();
+
+    chrome.extension.onRequest.addListener(
+      function(request, sender, sendResponse){
+        if(request.op == 'addToBlackList') {
+          blackListStore.push(request.content);
+          localStorage["blackList"] = blackListStore.join(',');
+        } else if(request.op == 'getBlackList'){
+          sendResponse({blackList: blackListStore});
+        } else if(request.op == 'reloadBlackList'){
+          blackListStore = loadBlackList();
+        }
+      }
+    );
+  </script>
+</html>
